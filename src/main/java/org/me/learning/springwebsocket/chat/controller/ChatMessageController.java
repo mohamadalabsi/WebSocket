@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.me.learning.springwebsocket.chat.model.ChatMessage;
 import org.me.learning.springwebsocket.chat.model.ChatNotification;
 import org.me.learning.springwebsocket.chat.service.ChatMessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,10 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ChatMessageController {
+
+    @Autowired
     private final ChatMessageService chatMessageService ;
+    @Autowired
     private final SimpMessagingTemplate messagingTemplate ;
+
+    public ChatMessageController(ChatMessageService chatMessageService, SimpMessagingTemplate messagingTemplate) {
+        this.chatMessageService = chatMessageService;
+        this.messagingTemplate = messagingTemplate;
+    }
 
 
     @MessageMapping ("/chat")
@@ -27,7 +36,13 @@ public class ChatMessageController {
         ChatMessage savedMessage = chatMessageService.save(chatMessage);
 //        mohammad/queue/messages
         messagingTemplate.convertAndSendToUser(chatMessage.getRecipientId() , "queue/messages" ,
-       ChatNotification.builder().id(savedMessage.getId()).senderId(savedMessage.getSenderId()).recipientId(savedMessage.getRecipientId()).content(savedMessage.getContent()).build());
+                new ChatNotification(
+                        savedMessage.getId(),
+                        savedMessage.getSenderId(),
+                        savedMessage.getRecipientId(),
+                        savedMessage.getContent()
+                ));
+//       ChatNotification.builder().id(savedMessage.getId()).senderId(savedMessage.getSenderId()).recipientId(savedMessage.getRecipientId()).content(savedMessage.getContent()).build());
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}")

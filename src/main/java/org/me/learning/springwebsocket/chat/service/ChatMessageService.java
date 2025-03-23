@@ -5,17 +5,25 @@ import lombok.RequiredArgsConstructor;
 import org.me.learning.springwebsocket.chat.model.ChatMessage;
 import org.me.learning.springwebsocket.chat.repo.ChatMessageRepo;
 import org.me.learning.springwebsocket.chatroom.service.ChatroomService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class ChatMessageService {
 
+    @Autowired
     private  final ChatMessageRepo chatMessageRepo ;
-    private  final ChatroomService chatroomService ;
+    @Autowired
+    private  final  ChatroomService chatroomService ;
+
+    public ChatMessageService(ChatMessageRepo chatMessageRepo, ChatroomService chatroomService) {
+        this.chatMessageRepo = chatMessageRepo;
+        this.chatroomService = chatroomService;
+    }
 
 
     public ChatMessage save (ChatMessage chatMessage){
@@ -29,7 +37,7 @@ public class ChatMessageService {
         //!    for finding  a chatroom
 
         var chatId = chatroomService.getChatroomById(senderId , recipientId , false);
-        return chatId.map(chatMessageRepo::findChatbyId).orElse(new ArrayList<>());
+        return chatId.map(chatMessageRepo::findChatById).orElse(new ArrayList<>());
     }
 
 }

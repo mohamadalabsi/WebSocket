@@ -4,6 +4,7 @@ package org.me.learning.springwebsocket.users.controller;
 import lombok.RequiredArgsConstructor;
 import org.me.learning.springwebsocket.users.model.User;
 import org.me.learning.springwebsocket.users.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -14,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor // instead of autowiring manually
+//@RequiredArgsConstructor // instead of autowiring manually
 public class UserController {
 
+    @Autowired
     private UserService userService;
 
 // !    second thing to notice

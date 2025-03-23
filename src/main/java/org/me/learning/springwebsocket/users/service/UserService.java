@@ -25,7 +25,7 @@ public class UserService {
         User storedUser = userRepo.findById(user.getNickName()).orElse(null);
 
         if (storedUser != null){
-            user.setStatus(Status.OFFlINE);
+            user.setStatus(Status.OFFLINE);
            userRepo.save(storedUser);
         }
 
@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public List<User> findConnectedUsers(){
-        return userRepo.findAllByStatus();
+        return userRepo.findAllByStatus(Status.ONLINE);
 
     }
 
